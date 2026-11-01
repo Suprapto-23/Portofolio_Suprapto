@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PRA Technology | Lulusan IT & Web Developer</title>
+    <title>Suprapto | Full Stack Web Developer & IT Professional</title>
 
     <!-- Google Fonts: Inter & Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,21 +64,27 @@
 </head>
 <body class="text-[#0B1B3A] bg-[#FAFCFF] antialiased overflow-x-hidden selection:bg-[#1677FF] selection:text-white">
 
-    <!-- ================= NAVBAR PREMIUM ================= -->
+    <!-- ================= NAVBAR PERSONAL PORTOFOLIO ================= -->
     <header id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 glass-nav shadow-[0_4px_30px_rgba(0,0,0,0.02)] h-[90px] flex items-center">
         <div class="max-w-[1180px] w-full mx-auto px-6 flex justify-between items-center">
 
-            <!-- Logo Brand -->
-            <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center transition-transform hover:scale-105 duration-300">
-                <img src="{{ asset('images/logo.png') }}" alt="PRA Technology Logo" class="h-14 md:h-16 lg:h-[72px] w-auto object-contain">
+            <!-- Personal Logo / Name Brand -->
+            <a href="{{ route('home') }}" class="flex-shrink-0 flex items-center gap-3 transition-transform hover:scale-105 duration-300">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1677FF] to-[#7048FF] flex items-center justify-center text-white font-extrabold text-lg shadow-md shadow-blue-500/20">
+                    S
+                </div>
+                <div>
+                    <span class="block font-extrabold text-[#0B1B3A] text-base leading-tight">Suprapto, S.Kom.</span>
+                    <span class="block text-[11px] font-semibold text-[#1677FF] tracking-wide">Full Stack Developer</span>
+                </div>
             </a>
 
-            <!-- Desktop Navigation Menu -->
+            <!-- Desktop Navigation Menu (Disesuaikan untuk Portofolio Pribadi) -->
             <nav class="hidden md:flex items-center gap-1 lg:gap-2">
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Beranda</a>
-                <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Profil Saya</a>
-                <a href="{{ route('services') }}" class="nav-link {{ request()->routeIs('services') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Layanan</a>
-                <a href="{{ route('projects') }}" class="nav-link {{ request()->routeIs('projects') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Portofolio</a>
+                <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Profil</a>
+                <a href="{{ route('services') }}" class="nav-link {{ request()->routeIs('services') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Skill</a>
+                <a href="{{ route('projects') }}" class="nav-link {{ request()->routeIs('projects') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Project</a>
                 <a href="{{ route('dokumentasi') }}" class="nav-link {{ request()->routeIs('dokumentasi') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Dokumentasi</a>
                 <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Hubungi</a>
             </nav>
@@ -100,7 +106,7 @@
         <div id="mobile-menu" class="absolute top-[90px] left-4 right-4 bg-white rounded-2xl border border-gray-100 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] py-4 px-4 hidden flex-col gap-2 md:hidden transform origin-top transition-all duration-300 opacity-0 -translate-y-4">
             <a href="{{ route('home') }}" class="mobile-link {{ request()->routeIs('home') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Beranda</a>
             <a href="{{ route('about') }}" class="mobile-link {{ request()->routeIs('about') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Profil Saya</a>
-            <a href="{{ route('services') }}" class="mobile-link {{ request()->routeIs('services') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Layanan</a>
+            <a href="{{ route('services') }}" class="mobile-link {{ request()->routeIs('services') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Keahlian</a>
             <a href="{{ route('projects') }}" class="mobile-link {{ request()->routeIs('projects') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Portofolio</a>
             <a href="{{ route('dokumentasi') }}" class="mobile-link {{ request()->routeIs('dokumentasi') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Dokumentasi</a>
             <a href="{{ route('contact') }}" class="mobile-link {{ request()->routeIs('contact') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Hubungi</a>
@@ -112,7 +118,7 @@
         @yield('content')
     </main>
 
-    <!-- ================= FOOTER PREMIUM ================= -->
+    <!-- ================= FOOTER PORTOFOLIO ================= -->
 <footer class="bg-[#030917] text-white pt-12 sm:pt-16 lg:pt-20 pb-6 sm:pb-8 relative overflow-hidden">
     <!-- Abstract Glowing Ornaments -->
     <div class="absolute -top-40 -right-40 w-96 h-96 bg-[#1677FF]/15 rounded-full blur-[100px] pointer-events-none"></div>
@@ -122,22 +128,28 @@
     <div class="max-w-[1180px] mx-auto px-6 relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 lg:gap-16 pb-8 sm:pb-10 lg:pb-14 border-b border-white/10">
 
-            <!-- Kolom 1: Brand & Deskripsi -->
+            <!-- Kolom 1: Personal Branding -->
             <div class="md:col-span-5 flex flex-col gap-3 sm:gap-5">
-                <a href="{{ route('home') }}" class="inline-block">
-                    <img src="{{ asset('images/logo.png') }}" alt="PRA Technology" class="h-11 sm:h-14 lg:h-20 brightness-0 invert object-contain opacity-95 hover:opacity-100 transition-opacity">
+                <a href="{{ route('home') }}" class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#1677FF] to-[#7048FF] flex items-center justify-center text-white font-extrabold text-xl shadow-lg">
+                        S
+                    </div>
+                    <div>
+                        <span class="block font-extrabold text-white text-lg leading-tight">Suprapto, S.Kom.</span>
+                        <span class="block text-xs font-medium text-blue-400">Full Stack Web Developer</span>
+                    </div>
                 </a>
                 <p class="font-inter text-[#94A3B8] text-[13px] sm:text-[14.5px] leading-[1.6] sm:leading-[1.8] max-w-[400px]">
-                    Solusi pengembangan web profesional, sistem backend yang andal, integrasi API terstruktur, dan perancangan basis data teroptimasi untuk akselerasi ekosistem digital Anda.
+                    Portofolio profesional yang menampilkan rekam jejak, keahlian teknis, dan karya nyata dalam pengembangan aplikasi web modern berbasis Laravel dan MySQL.
                 </p>
             </div>
 
             <!-- Kolom 2: Navigasi Menu -->
             <div class="md:col-span-3 flex flex-col gap-2 sm:gap-3.5">
-                <h4 class="text-white font-bold text-[12.5px] sm:text-[14px] tracking-wider mb-1 sm:mb-2 uppercase relative inline-block after:content-[''] after:absolute after:-bottom-1.5 after:left-0 after:w-6 sm:after:w-8 after:h-[2px] after:bg-[#1677FF]">Navigasi Utama</h4>
+                <h4 class="text-white font-bold text-[12.5px] sm:text-[14px] tracking-wider mb-1 sm:mb-2 uppercase relative inline-block after:content-[''] after:absolute after:-bottom-1.5 after:left-0 after:w-6 sm:after:w-8 after:h-[2px] after:bg-[#1677FF]">Navigasi</h4>
                 <a href="{{ route('home') }}" class="text-[#94A3B8] hover:text-white hover:translate-x-1 transition-all duration-300 w-fit text-[13px] sm:text-[14.5px] mt-1 sm:mt-2">Beranda</a>
                 <a href="{{ route('about') }}" class="text-[#94A3B8] hover:text-white hover:translate-x-1 transition-all duration-300 w-fit text-[13px] sm:text-[14.5px]">Profil Saya</a>
-                <a href="{{ route('services') }}" class="text-[#94A3B8] hover:text-white hover:translate-x-1 transition-all duration-300 w-fit text-[13px] sm:text-[14.5px]">Layanan IT</a>
+                <a href="{{ route('services') }}" class="text-[#94A3B8] hover:text-white hover:translate-x-1 transition-all duration-300 w-fit text-[13px] sm:text-[14.5px]">Keahlian</a>
                 <a href="{{ route('projects') }}" class="text-[#94A3B8] hover:text-white hover:translate-x-1 transition-all duration-300 w-fit text-[13px] sm:text-[14.5px]">Portofolio</a>
                 <a href="{{ route('dokumentasi') }}" class="text-[#94A3B8] hover:text-white hover:translate-x-1 transition-all duration-300 w-fit text-[13px] sm:text-[14.5px]">Dokumentasi</a>
             </div>
@@ -145,13 +157,13 @@
             <!-- Kolom 3: Kontak & Social Media Interaktif -->
             <div class="md:col-span-4 flex flex-col gap-2.5 sm:gap-4">
                 <h4 class="text-white font-bold text-[12.5px] sm:text-[14px] tracking-wider mb-1 sm:mb-2 uppercase relative inline-block after:content-[''] after:absolute after:-bottom-1.5 after:left-0 after:w-6 sm:after:w-8 after:h-[2px] after:bg-[#1677FF]">Terhubung</h4>
-                <p class="font-inter text-[#94A3B8] text-[12.5px] sm:text-[14px] mt-1 sm:mt-2 mb-0.5 sm:mb-1">Terbuka untuk kolaborasi, magang, maupun pengembangan proyek profesional.</p>
+                <p class="font-inter text-[#94A3B8] text-[12.5px] sm:text-[14.0px] mt-1 sm:mt-2 mb-0.5 sm:mb-1">Terbuka untuk kesempatan magang, kolaborasi, dan posisi penuh waktu (*full-time*).</p>
 
                 <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 mt-0.5 sm:mt-1">
-                    <a href="https://linkedin.com/in/suprapto" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon social-linkedin w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#94A3B8]">
+                    <a href="https://linkedin.com/in/supraptokulo" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-icon social-linkedin w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#94A3B8]">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                     </a>
-                    <a href="https://github.com/Suprapto-23" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon social-github w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#94A3B8]">
+                    <a href="https://github.com/suprapto" target="_blank" rel="noopener" aria-label="GitHub" class="social-icon social-github w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#94A3B8]">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                     </a>
                     <a href="https://wa.me/6281229952175" target="_blank" rel="noopener" aria-label="WhatsApp" class="social-icon social-whatsapp w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-[#94A3B8]">
@@ -166,9 +178,9 @@
         </div>
 
         <div class="pt-4 sm:pt-6 lg:pt-8 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-2 sm:gap-4 text-center">
-            <p class="font-inter text-[#64748B] text-[11.5px] sm:text-[13.5px]">&copy; {{ date('Y') }} <span class="text-white font-medium">PRA TECHNOLOGY</span>. All rights reserved.</p>
-            <p class="font-inter text-[#64748B] text-[11.5px] sm:text-[13.5px] flex items-center gap-1.5">
-                Designed &amp; Built with PRA TECHNOLOGY TIM
+            <p class="font-inter text-[#64748B] text-[11.5px] sm:text-[13.5px]">&copy; {{ date('Y') }} <span class="text-white font-medium">SUPRAPTO</span>. All rights reserved.</p>
+            <p class="font-inter text-[#64748B] text-[11.5px] sm:text-[13.5px]">
+                Built with Laravel &amp; Tailwind CSS
             </p>
         </div>
     </div>

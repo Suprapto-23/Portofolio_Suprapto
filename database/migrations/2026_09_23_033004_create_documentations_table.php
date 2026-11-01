@@ -9,16 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('documentations', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('category')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-    }
+    public function up()
+{
+    Schema::create('documentations', function (Blueprint $table) {
+        $table->id();
+        $table->string('title'); // Judul Dokumentasi
+        $table->string('category')->nullable(); // Kategori (Misal: Kegiatan, Sertifikasi, Event, dll)
+        $table->string('image_path'); // File Gambar / Foto Utama
+        $table->text('description')->nullable(); // Deskripsi Singkat
+        $table->boolean('is_active')->default(true); // Status Tampil
+        $table->integer('sort_order')->default(0); // Urutan
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

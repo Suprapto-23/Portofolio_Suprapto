@@ -6,24 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up(): void
-    {
-        Schema::create('educations', function (Blueprint $table) {
-            $table->id();
-            $table->string('institution');
-            $table->string('degree')->nullable();
-            $table->string('field_of_study')->nullable();
-            $table->string('location')->nullable();
-            $table->year('start_year')->nullable();
-            $table->year('end_year')->nullable();
-            $table->decimal('gpa', 3, 2)->nullable();
-            $table->text('description')->nullable();
-            $table->string('logo')->nullable();
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-    }
+    public function up()
+{
+    Schema::create('educations', function (Blueprint $table) {
+        $table->id();
+        $table->string('institution'); // Nama Kampus / Sekolah
+        $table->string('degree'); // Gelar / Jenjang (Misal: S1 - Teknik Informatika)
+        $table->string('major'); // Jurusan
+        $table->string('gpa'); // IPK (Misal: 3.85 / 4.00)
+        $table->string('period'); // Periode (Misal: 2020 - 2024)
+        $table->string('photo')->nullable(); // Foto Profil Mahasiswa
+        $table->string('photo_position')->default('right'); // Posisi Foto: 'left' atau 'right'
+        $table->text('description')->nullable(); // Deskripsi Detail Selama Kuliah
+        $table->json('documentations')->nullable(); // Galeri Dokumentasi Mahasiswa (Multiple Images)
+        $table->boolean('is_active')->default(true);
+        $table->timestamps();
+    });
+}
 
     public function down(): void
     {

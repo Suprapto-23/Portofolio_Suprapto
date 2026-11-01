@@ -16,6 +16,13 @@ use App\Models\Documentation;
 use App\Models\Training;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Admin\ExperienceController;
+use App\Http\Controllers\Admin\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +30,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// 1. Halaman Beranda (Home Landing Page)
+// ==========================================
+// A. ROUTE HALAMAN PUBLIK (FRONTEND)
+// ==========================================
+
 Route::get('/', function () {
     $settings = SiteSetting::query()->get()->keyBy('key');
     $hero = HeroSection::query()->where('is_active', true)->orderBy('sort_order')->first();
@@ -31,7 +41,6 @@ Route::get('/', function () {
     $services = Service::query()->where('is_active', true)->orderBy('sort_order')->get();
     $experiences = Experience::query()->where('is_active', true)->orderBy('sort_order')->get();
     $educations = Education::query()->where('is_active', true)->orderBy('sort_order')->get();
-    
     
     $skillCategories = SkillCategory::query()
         ->where('is_active', true)
@@ -44,7 +53,6 @@ Route::get('/', function () {
     $skills = Skill::query()->where('is_active', true)->orderBy('sort_order')->get();
     $technologies = Technology::query()->where('is_active', true)->orderBy('sort_order')->get();
     
-    // Mengambil semua project aktif, nanti dilimit 3 di file blade (Home)
     $projects = Project::query()->where('is_active', true)->orderByDesc('is_featured')->orderBy('sort_order')->get();
     
     $certifications = Certification::query()->where('is_active', true)->orderBy('sort_order')->get();
@@ -57,8 +65,6 @@ Route::get('/', function () {
     ));
 })->name('home');
 
-
-// 2. Halaman Profil Saya (About)
 Route::get('/about', function () {
     $settings = SiteSetting::query()->get()->keyBy('key');
     $about = AboutSection::query()->where('is_active', true)->first();
@@ -68,8 +74,6 @@ Route::get('/about', function () {
     return view('pages.about', compact('settings', 'about', 'educations', 'experiences'));
 })->name('about');
 
-
-// 3. Halaman Layanan (Services)
 Route::get('/services', function () {
     $settings = SiteSetting::query()->get()->keyBy('key');
     $services = Service::query()->where('is_active', true)->orderBy('sort_order')->get();
@@ -77,8 +81,6 @@ Route::get('/services', function () {
     return view('pages.services', compact('settings', 'services'));
 })->name('services');
 
-
-// 4. Halaman Portofolio/Proyek (Projects)
 Route::get('/projects', function () {
     $settings = SiteSetting::query()->get()->keyBy('key');
     $projects = Project::query()->where('is_active', true)->orderByDesc('is_featured')->orderBy('sort_order')->get();
@@ -86,8 +88,6 @@ Route::get('/projects', function () {
     return view('pages.projects', compact('settings', 'projects'));
 })->name('projects');
 
-
-// 5. Detail Proyek (Project Detail)
 Route::get('/project/{project:slug}', function (Project $project) {
     abort_unless($project->is_active, 404);
     $settings = SiteSetting::query()->get()->keyBy('key');
@@ -95,18 +95,64 @@ Route::get('/project/{project:slug}', function (Project $project) {
     return view('pages.project-detail', compact('project', 'settings'));
 })->name('projects.show');
 
-
-// 6. Halaman Kontak (Contact)
 Route::get('/contact', function () {
     $settings = SiteSetting::query()->get()->keyBy('key');
 
     return view('pages.contact', compact('settings'));
 })->name('contact');
 
-// 7. Halaman Dokumentasi
 Route::get('/dokumentasi', function () {
     $settings = SiteSetting::query()->get()->keyBy('key');
     $docs = Documentation::query()->where('is_active', true)->latest()->get();
 
     return view('pages.dokumentasi', compact('settings', 'docs'));
 })->name('dokumentasi');
+
+
+// ==========================================
+// B. ROUTE AUTENTIKASI ADMIN
+// ==========================================
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.attempt');
+});
+
+
+
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
+
+
+// ==========================================
+// C. ROUTE PANEL ADMIN (CRUD LENGKAP)
+// ==========================================
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+
+// Tambahkan di dalam group admin:
+Route::resource('trainings', App\Http\Controllers\Admin\TrainingController::class);
+Route::resource('documentations', App\Http\Controllers\Admin\DocumentationController::class);
+    
+    // Dashboard Admin
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/stats', [DashboardController::class, 'data'])->name('stats');
+
+    // 1. Proyek
+    Route::get('projects/{project}/success', [ProjectController::class, 'success'])->name('projects.success');
+    Route::resource('projects', ProjectController::class);
+
+    // 2. Keahlian / Skills
+    Route::resource('skills', SkillController::class);
+
+    // 3. Sertifikat (Gunakan nama resource 'certificates')
+    Route::resource('certificates', CertificateController::class);
+
+    // 4. Pengalaman
+    Route::resource('experiences', ExperienceController::class);
+
+    // 5. Pendidikan (TAMBAHKAN BARIS INI)
+    Route::resource('educations', App\Http\Controllers\Admin\EducationController::class);
+
+    // 6. Pesan
+    Route::resource('messages', MessageController::class);
+
+    
+});

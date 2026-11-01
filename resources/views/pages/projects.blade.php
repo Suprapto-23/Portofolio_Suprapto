@@ -14,87 +14,91 @@
     </div>
 </section>
 
-<!-- PROJECTS LIST -->
+<!-- PROJECTS LIST (DINAMIS DARI DATABASE ADMIN) -->
 <section class="py-24 bg-[#FAFCFF]">
     <div class="max-w-[1180px] mx-auto px-6 flex flex-col gap-24">
         
-        <!-- Project 1 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" data-aos="fade-up">
-            <div class="order-2 lg:order-1">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF6FF] text-[#1677FF] text-[12px] font-bold mb-4">
-                    <span class="w-2 h-2 rounded-full bg-[#1677FF]"></span> Healthcare System
-                </div>
-                <h2 class="text-[28px] md:text-[32px] font-bold text-[#0B1B3A] mb-4">Sistem Informasi Manajemen Posyandu</h2>
-                <p class="text-[15px] text-[#64748B] leading-[1.8] mb-6">
-                    A comprehensive web-based platform built to digitize health administration for Posyandu services in Desa Bantarkulon. The system efficiently manages data for toddlers, teenagers, and the elderly. 
-                </p>
-                <ul class="flex flex-col gap-3 mb-8 text-[14.5px] text-[#0B1B3A]">
-                    <li class="flex items-start gap-3"><svg class="w-5 h-5 text-[#1677FF] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Role-Based Access Control (RBAC) security.</li>
-                    <li class="flex items-start gap-3"><svg class="w-5 h-5 text-[#1677FF] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Achieved 84.28% feasibility score in User Acceptance Testing.</li>
-                </ul>
-                <div class="flex gap-3">
-                    <span class="px-4 py-1.5 border border-[#DCE7F5] bg-white rounded-lg text-[13px] font-semibold text-[#0B1B3A]">Laravel</span>
-                    <span class="px-4 py-1.5 border border-[#DCE7F5] bg-white rounded-lg text-[13px] font-semibold text-[#0B1B3A]">MySQL</span>
-                </div>
-            </div>
-            <div class="order-1 lg:order-2 bg-white p-6 rounded-[24px] border border-[#DCE7F5] shadow-lg shadow-[#1677FF]/5">
-                <div class="bg-[#F4F9FF] rounded-xl overflow-hidden aspect-video flex items-center justify-center">
-                    <img src="{{ asset('images/project-posyandu.png') }}" alt="SIM Posyandu" class="w-full h-full object-contain mix-blend-multiply" onerror="this.style.display='none'">
-                </div>
-            </div>
-        </div>
+        @forelse($projects as $index => $project)
+            @php
+                $isEven = $index % 2 !== 0;
 
-        <!-- Project 2 (Reversed) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" data-aos="fade-up">
-            <div class="bg-white p-6 rounded-[24px] border border-[#DCE7F5] shadow-lg shadow-[#1677FF]/5">
-                <div class="bg-[#F4F9FF] rounded-xl overflow-hidden aspect-video flex items-center justify-center">
-                    <img src="{{ asset('images/project-sapi.png') }}" alt="Sistem Pakar Sapi" class="w-full h-full object-contain mix-blend-multiply" onerror="this.style.display='none'">
-                </div>
-            </div>
-            <div>
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF6FF] text-[#1677FF] text-[12px] font-bold mb-4">
-                    <span class="w-2 h-2 rounded-full bg-[#1677FF]"></span> Expert System / Logic
-                </div>
-                <h2 class="text-[28px] md:text-[32px] font-bold text-[#0B1B3A] mb-4">Sistem Pakar Diagnosis Sapi</h2>
-                <p class="text-[15px] text-[#64748B] leading-[1.8] mb-6">
-                    Developed as a semester project for Big Data, this intelligent web application helps diagnose cattle diseases automatically based on inputted symptoms.
-                </p>
-                <ul class="flex flex-col gap-3 mb-8 text-[14.5px] text-[#0B1B3A]">
-                    <li class="flex items-start gap-3"><svg class="w-5 h-5 text-[#1677FF] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Algorithm: Certainty Factor & Forward Chaining.</li>
-                    <li class="flex items-start gap-3"><svg class="w-5 h-5 text-[#1677FF] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Automated medical action recommendations.</li>
-                </ul>
-                <div class="flex gap-3">
-                    <span class="px-4 py-1.5 border border-[#DCE7F5] bg-white rounded-lg text-[13px] font-semibold text-[#0B1B3A]">Laravel</span>
-                    <span class="px-4 py-1.5 border border-[#DCE7F5] bg-white rounded-lg text-[13px] font-semibold text-[#0B1B3A]">Algorithms</span>
-                </div>
-            </div>
-        </div>
+                // Peta logo resmi untuk setiap tools
+                $logoMap = [
+                    'Laravel' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/laravel/laravel-original.svg',
+                    'PHP' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg',
+                    'Python' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg',
+                    'MySQL' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original.svg',
+                    'Tailwind CSS' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/tailwindcss/tailwindcss-original.svg',
+                    'JavaScript' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg',
+                    'Node.js' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-original.svg',
+                    'Git' => 'https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg',
+                ];
 
-        <!-- Project 3 -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" data-aos="fade-up">
-            <div class="order-2 lg:order-1">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF6FF] text-[#1677FF] text-[12px] font-bold mb-4">
-                    <span class="w-2 h-2 rounded-full bg-[#1677FF]"></span> E-Commerce & API
+                $projectTools = $project->technologies ? json_decode($project->technologies, true) : [];
+            @endphp
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" data-aos="fade-up">
+                
+                <!-- Kolom Teks -->
+                <div class="{{ $isEven ? 'order-2 lg:order-2' : 'order-2 lg:order-1' }}">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAF6FF] text-[#1677FF] text-[12px] font-bold mb-4">
+                        <span class="w-2 h-2 rounded-full bg-[#1677FF]"></span> {{ $project->category ?? 'Web Application' }}
+                    </div>
+                    
+                    <h2 class="text-[28px] md:text-[32px] font-bold text-[#0B1B3A] mb-4">
+                        {{ $project->title }}
+                    </h2>
+                    
+                    <p class="text-[15px] text-[#64748B] leading-[1.8] mb-6">
+                        {{ $project->description }}
+                    </p>
+
+                    <!-- Tombol Tautan Live Demo / GitHub -->
+                    <div class="flex flex-wrap gap-3 mb-8">
+                        @if($project->demo_url)
+                            <a href="{{ $project->demo_url }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-[#1677FF] text-white rounded-xl text-[13px] font-semibold hover:bg-blue-600 transition shadow-sm">
+                                Live Demo →
+                            </a>
+                        @endif
+                        @if($project->github_url)
+                            <a href="{{ $project->github_url }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 border border-[#DCE7F5] bg-white text-[#0B1B3A] rounded-xl text-[13px] font-semibold hover:bg-slate-50 transition shadow-sm">
+                                GitHub Repository
+                            </a>
+                        @endif
+                    </div>
+
+                    <!-- Tech Stack / Tools dengan Logo -->
+                    <div class="flex flex-wrap gap-2">
+                        @forelse($projectTools as $tool)
+                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 border border-[#DCE7F5] bg-white rounded-xl text-[13px] font-bold text-[#0B1B3A] shadow-2xs">
+                                @if(isset($logoMap[$tool]))
+                                    <img src="{{ $logoMap[$tool] }}" alt="{{ $tool }}" class="w-4 h-4 object-contain">
+                                @endif
+                                {{ $tool }}
+                            </span>
+                        @empty
+                            <span class="text-xs text-slate-400">Tidak ada tech stack yang dipilih.</span>
+                        @endforelse
+                    </div>
                 </div>
-                <h2 class="text-[28px] md:text-[32px] font-bold text-[#0B1B3A] mb-4">Sistem Pemesanan Tiket Online</h2>
-                <p class="text-[15px] text-[#64748B] leading-[1.8] mb-6">
-                    An end-to-end ticket reservation platform built for Lolong Adventure tourism. It streamlines the booking process and manages live transactions.
-                </p>
-                <ul class="flex flex-col gap-3 mb-8 text-[14.5px] text-[#0B1B3A]">
-                    <li class="flex items-start gap-3"><svg class="w-5 h-5 text-[#1677FF] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Robust REST API integration for transactions.</li>
-                    <li class="flex items-start gap-3"><svg class="w-5 h-5 text-[#1677FF] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Optimized relational database for fast query loads.</li>
-                </ul>
-                <div class="flex gap-3">
-                    <span class="px-4 py-1.5 border border-[#DCE7F5] bg-white rounded-lg text-[13px] font-semibold text-[#0B1B3A]">Laravel</span>
-                    <span class="px-4 py-1.5 border border-[#DCE7F5] bg-white rounded-lg text-[13px] font-semibold text-[#0B1B3A]">REST API</span>
+
+                <!-- Kolom Gambar Proyek -->
+                <div class="{{ $isEven ? 'order-1 lg:order-1' : 'order-1 lg:order-2' }} bg-white p-6 rounded-[24px] border border-[#DCE7F5] shadow-lg shadow-[#1677FF]/5">
+                    <div class="bg-[#F4F9FF] rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                        @if($project->image)
+                            <img src="{{ asset('storage/' . $project->image) }}" alt="{{ $project->title }}" class="w-full h-full object-cover" onerror="this.style.display='none'">
+                        @else
+                            <div class="text-slate-400 font-bold text-sm">No Image Available</div>
+                        @endif
+                    </div>
                 </div>
+
             </div>
-            <div class="order-1 lg:order-2 bg-white p-6 rounded-[24px] border border-[#DCE7F5] shadow-lg shadow-[#1677FF]/5">
-                <div class="bg-[#F4F9FF] rounded-xl overflow-hidden aspect-video flex items-center justify-center">
-                    <img src="{{ asset('images/project-ticket.png') }}" alt="Tiket Online" class="w-full h-full object-contain mix-blend-multiply" onerror="this.style.display='none'">
-                </div>
+        @empty
+            <div class="text-center py-16">
+                <p class="text-slate-500 text-lg">Belum ada proyek yang ditampilkan.</p>
             </div>
-        </div>
+        @endforelse
 
     </div>
 </section>

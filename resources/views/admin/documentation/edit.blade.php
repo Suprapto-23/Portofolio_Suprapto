@@ -1,0 +1,57 @@
+@extends('admin.layouts.app')
+@section('title', 'Edit Dokumentasi')
+
+@section('content')
+<div class="max-w-3xl mx-auto space-y-8 pb-12">
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white p-6 sm:p-8 shadow-xl flex items-center justify-between">
+        <div class="relative z-10 max-w-lg">
+            <a href="{{ route('admin.documentations.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-300 hover:text-white bg-blue-500/25 px-3 py-1 rounded-full border border-blue-400/30 transition mb-3">
+                ← Kembali ke Daftar
+            </a>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Edit Dokumentasi ✍️</h1>
+        </div>
+    </div>
+
+    <form action="{{ route('admin.documentations.update', $documentation->id) }}" method="POST" enctype="multipart/form-data" class="bg-white border border-slate-200/80 rounded-3xl shadow-sm p-6 sm:p-10 space-y-6">
+        @csrf @method('PUT')
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-bold text-slate-800 mb-2">Judul Dokumentasi</label>
+                <input type="text" name="title" value="{{ old('title', $documentation->title) }}" required class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:bg-white focus:border-blue-600">
+            </div>
+            <div>
+                <label class="block text-sm font-bold text-slate-800 mb-2">Kategori</label>
+                <input type="text" name="category" value="{{ old('category', $documentation->category) }}" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:bg-white focus:border-blue-600">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm font-bold text-slate-800 mb-2">Ganti Foto Dokumentasi</label>
+            @if($documentation->image_path)
+                <div class="mb-3 w-20 h-20 rounded-xl overflow-hidden border border-slate-200">
+                    <img src="{{ asset('storage/' . $documentation->image_path) }}" class="w-full h-full object-cover">
+                </div>
+            @endif
+            <input type="file" name="image_path" accept=".jpg,.jpeg,.png,.webp" class="w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 bg-slate-50 border border-slate-200 rounded-2xl cursor-pointer">
+        </div>
+
+        <div>
+            <label class="block text-sm font-bold text-slate-800 mb-2">Deskripsi Singkat</label>
+            <textarea name="description" rows="4" class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium focus:bg-white focus:border-blue-600">{{ old('description', $documentation->description) }}</textarea>
+        </div>
+
+        <div class="pt-2">
+            <label class="relative flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="is_active" value="1" {{ $documentation->is_active ? 'checked' : '' }} class="w-5 h-5 rounded-lg border-slate-300 text-blue-600">
+                <span class="text-sm font-bold text-slate-700">Tampilkan di halaman publik website</span>
+            </label>
+        </div>
+
+        <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
+            <a href="{{ route('admin.documentations.index') }}" class="px-6 py-4 bg-slate-100 text-slate-700 font-bold rounded-2xl text-sm">Batal</a>
+            <button type="submit" class="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl text-sm shadow-xl">Perbarui Dokumentasi</button>
+        </div>
+    </form>
+</div>
+@endsection
