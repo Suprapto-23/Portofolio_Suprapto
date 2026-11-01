@@ -7,27 +7,65 @@
     $projects     = collect($P['projects'] ?? []);
     $certificates = collect($P['certificates'] ?? []);
     $stats        = $P['stats'] ?? [];
-    $timeline     = $P['timeline'] ?? [];
-    $orgs         = $P['organizations'] ?? [];
     $ip           = $P['ip'] ?? [];
-    $about        = $P['about'] ?? [];
-    $highlights   = $P['highlights'] ?? [];
 
-    // Foto pribadi: public/images/profile.jpg (hero) dan public/images/about.jpg (opsional)
-    $firstFile = function (array $paths) {
-        foreach ($paths as $p) {
-            if (file_exists(public_path($p))) { return asset($p); }
+    // File surat pencatatan ciptaan (taruh di public/documents/hak-cipta/). Dicocokkan lewat kata kunci judul.
+    $ipFiles = [
+        'posyandu' => 'documents/hak-cipta/hak-cipta-posyandu.pdf',
+        'tiket'    => 'documents/hak-cipta/hak-cipta-tiket-lolong.pdf',
+    ];
+    $ipFileFor = function (string $title) use ($ipFiles) {
+        foreach ($ipFiles as $kw => $path) {
+            if (str_contains(strtolower($title), $kw) && file_exists(public_path($path))) { return asset($path); }
         }
         return null;
     };
-    $heroPhoto  = $firstFile(['images/profile.jpg', 'images/profile.jpeg', 'images/profile.png', 'profile.png']);
-    $aboutPhoto = $firstFile(['images/about.jpg', 'images/about.jpeg']);
+    $about        = $P['about'] ?? [];
+    $highlights   = $P['highlights'] ?? [];
 
-    $links = [
-        'github'   => 'https://github.com/Suprapto-23',
-        'linkedin' => 'https://linkedin.com/in/supraptokulo',
-        'email'    => 'ssuprapto351@gmail.com',
-    ];
+    // Tautan ke halaman profil (mencoba nama route umum, jika tidak ada memakai /profil)
+    $profileRoute = collect(['profile', 'profil', 'about'])->first(fn ($n) => \Illuminate\Support\Facades\Route::has($n));
+    $profileUrl   = $profileRoute ? route($profileRoute) : url('/profil');
+    $skillsUrl    = \Illuminate\Support\Facades\Route::has('skills') ? route('skills') : url('/skills');
+
+    // ---- Pembaca data yang toleran: mendukung array asosiatif maupun array berindeks ----
+    $pick = function ($row, array $keys, $default = '') {
+        $row = (array) $row;
+        foreach ($keys as $k) {
+            if (isset($row[$k]) && $row[$k] !== '' && $row[$k] !== null) { return $row[$k]; }
+        }
+        return $default;
+    };
+
+    // Pengalaman: terima beberapa kemungkinan nama kunci pada config/portfolio.php
+    $rawTimeline = $P['timeline'] ?? $P['experience'] ?? $P['experiences'] ?? $P['pengalaman'] ?? [];
+    $timeline = collect($rawTimeline)->map(function ($r) use ($pick) {
+        $bullets = $pick($r, ['bullets', 'points', 'tasks', 'items', 'list', 3], []);
+        if (is_string($bullets)) { $bullets = [$bullets]; }
+        if (!$bullets && ($d = $pick($r, ['desc', 'description', 'summary']))) { $bullets = [$d]; }
+        return [
+            'role'    => $pick($r, ['role', 'title', 'position', 'jabatan', 0]),
+            'org'     => $pick($r, ['org', 'company', 'organization', 'instansi', 1]),
+            'period'  => $pick($r, ['period', 'time', 'date', 'year', 'periode', 2]),
+            'note'    => $pick($r, ['note', 'catatan']),
+            'bullets' => (array) $bullets,
+            'link'    => is_array($l = $pick($r, ['link'], null)) ? $l : null,
+        ];
+    })->filter(fn ($i) => $i['role'] !== '' || $i['org'] !== '')->values();
+
+    // Organisasi & kegiatan
+    $rawOrgs = $P['activities'] ?? $P['organizations'] ?? $P['organisasi'] ?? [];
+    $orgs = collect($rawOrgs)->map(fn ($r) => [
+        'time'  => $pick($r, ['time', 'period', 'date', 'year', 'periode', 2]),
+        'title' => $pick($r, ['title', 'role', 'name', 'jabatan', 0]),
+        'org'   => $pick($r, ['org', 'organization', 'organisasi', 'instansi', 1]),
+        'desc'  => $pick($r, ['desc', 'description', 'note', 3]),
+    ])->filter(fn ($o) => $o['title'] !== '' || $o['org'] !== '')->values();
+
+    // Foto dan tautan diatur di config/portfolio_site.php
+    $heroPhoto  = \App\Support\Img::url('profile');
+    $aboutPhoto = \App\Support\Img::url('about_photo');
+    $links      = config('portfolio_site.links');
 
     // Ikon teknologi (Devicon via CDN) dan ikon Office / garis (SVG inline)
     $dev = fn ($slug, $v = 'original') => "https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/{$slug}/{$slug}-{$v}.svg";
@@ -85,25 +123,15 @@
     ];
 
     $thesis = [
-        'title'    => 'Implementasi Metode RAD dalam Rancang Bangun Sistem Informasi Manajemen Posyandu',
-        'case'     => 'Studi Kasus: Desa Bantarkulon',
-        'year'     => '2026',
-        'summary'  => 'Penelitian ini merancang dan membangun sistem informasi manajemen Posyandu berbasis web untuk Posyandu Desa Bantarkulon sebagai solusi atas pencatatan manual. Pengembangan menggunakan metode Rapid Application Development (RAD) dengan Laravel, PHP, dan MySQL, kemudian diuji dengan Black Box Testing dan User Acceptance Testing (UAT).',
-        'tags'     => ['Laravel', 'PHP', 'MySQL', 'RAD', 'RBAC'],
-        'features' => [
-            ['Pencatatan terpadu', 'Data sasaran Balita, Remaja, dan Lansia tersimpan dalam satu basis data.'],
-            ['Hak akses berbasis peran', 'Role-Based Access Control untuk Admin, Bidan, Kader, dan Warga.'],
-            ['Riwayat kesehatan', 'Penelusuran riwayat kesehatan setiap sasaran.'],
-            ['Laporan operasional', 'Laporan operasional Posyandu disusun otomatis oleh sistem.'],
-        ],
-        'results'  => [
-            ['Black Box Testing', 'Valid', 'Seluruh skenario fungsional valid'],
-            ['User Acceptance Testing', '84,28%', 'Kategori “Sangat Layak”'],
-            ['Hak Cipta Program Komputer', 'No. 001576590', 'Diumumkan 25 Juli 2026'],
-        ],
-        'live'     => 'https://sim-posyanducare.vercel.app',
+        'title' => 'Implementasi Metode RAD dalam Rancang Bangun Sistem Informasi Manajemen Posyandu',
+        'case'  => 'Studi Kasus: Desa Bantarkulon',
+        'year'  => '2026',
+        'live'  => 'https://sim-posyanducare.vercel.app',
     ];
     $thesisProject = $projects->first(fn ($p) => str_contains(strtolower($p['title'] ?? ''), 'posyandu'));
+
+    // Indeks sertifikat BNSP agar kartu di Profil bisa membuka preview yang sama
+    $bnspIndex = $certificates->values()->search(fn ($c) => str_contains(strtolower($c['title'] ?? ''), 'junior web programmer'));
 
     // Data untuk preview sertifikat (dibaca oleh JavaScript di bagian bawah)
     $certData = $certificates->map(fn ($c) => [
@@ -118,53 +146,46 @@
 @endphp
 
 <style>
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scrollbar-gutter: stable; }
     section[id] { scroll-margin-top: 90px; }
     .pra-grad-text { background: linear-gradient(90deg, #0A6CFF 0%, #25AEFF 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .pra-blob { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
-    @keyframes praFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    .animate-float { animation: praFloat 6s ease-in-out infinite; }
     @keyframes praDot { 0%, 100% { box-shadow: 0 0 0 0 rgba(22,119,255,.45); } 50% { box-shadow: 0 0 0 7px rgba(22,119,255,0); } }
     .status-dot { animation: praDot 2s infinite; }
     @keyframes praPop { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
-    #certModal[open] { animation: praPop .28s ease-out; }
-    #certModal::backdrop { background: rgba(11, 27, 58, .72); backdrop-filter: blur(4px); }
+    #certModal[open], #ipModal[open] { animation: praPop .28s ease-out; }
+    #certModal::backdrop, #ipModal::backdrop { background: rgba(11, 27, 58, .62); backdrop-filter: blur(3px); }
     @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
-        .animate-float, .status-dot, #certModal[open] { animation: none; }
+        .status-dot, #certModal[open], #ipModal[open] { animation: none; }
     }
 </style>
 
 {{-- ======================= HERO ======================= --}}
-<section id="home" class="relative overflow-hidden bg-white pb-20 pt-16 lg:pb-28 lg:pt-24">
-    <div class="pra-blob right-[-10%] top-[-10%] h-[480px] w-[480px] bg-[#1677FF]/10"></div>
-    <div class="pra-blob bottom-[-10%] left-[-10%] h-[380px] w-[380px] bg-[#7048FF]/10"></div>
+<section id="home" class="relative overflow-hidden bg-white pb-16 pt-12 lg:pb-24 lg:pt-16">
+    <div class="pra-blob right-[-10%] top-[-10%] h-[440px] w-[440px] bg-[#1677FF]/10"></div>
 
     <div class="relative z-10 mx-auto max-w-[1180px] px-6">
-        <div class="grid grid-cols-1 items-center gap-14 lg:grid-cols-12 lg:gap-10">
+        <div class="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:items-stretch lg:gap-14">
 
             {{-- Teks --}}
-            <div class="text-center lg:col-span-7 lg:text-left" data-aos="fade-right">
+            <div class="text-center lg:col-span-7 lg:flex lg:flex-col lg:items-start lg:justify-center lg:text-left" data-aos="fade-right">
                 <div class="mb-6 inline-flex items-center gap-2.5 rounded-full border border-[#DCE7F5] bg-[#F4F9FF] px-4 py-2">
                     <span class="status-dot h-2 w-2 rounded-full bg-[#1677FF]"></span>
                     <span class="text-[13px] font-semibold text-[#1677FF]">Terbuka untuk posisi Junior Web Programmer</span>
                 </div>
 
-                <h1 class="mb-5 text-[38px] font-extrabold leading-[1.15] tracking-tight text-[#0B1B3A] md:text-[48px] lg:text-[54px]">
-                    Suprapto, <span class="pra-grad-text">Junior Web Programmer</span>
+                <h1 class="text-[34px] font-extrabold leading-[1.12] tracking-tight text-[#0B1B3A] md:text-[42px] lg:text-[46px]">
+                    Halo, saya Suprapto
+                    <span class="pra-grad-text mt-1 block">Junior Web Programmer</span>
                 </h1>
-                <p class="mb-5 text-[17px] font-semibold text-[#0B1B3A]">Pengembangan Web dan Sistem Informasi</p>
+                <p class="mt-4 text-[17px] font-semibold text-[#0B1B3A]">Pengembangan Web dan Sistem Informasi</p>
 
-                <p class="mx-auto mb-6 max-w-[580px] text-[16px] leading-[1.8] text-[#64748B] lg:mx-0">
-                    Lulusan S1 Teknologi Informasi ITSNU Pekalongan (IPK 3,76) dengan pengalaman mengembangkan sistem informasi berbasis web menggunakan Laravel, PHP, dan MySQL, mulai dari analisis kebutuhan dan perancangan basis data hingga pengujian dan pendampingan pengguna.
+                <p class="mx-auto mt-4 max-w-[560px] text-[16px] leading-[1.8] text-[#64748B] lg:mx-0">
+                    Lulusan S1 Teknologi Informasi ITSNU Pekalongan (IPK 3,76). Berpengalaman membangun sistem informasi berbasis web dengan Laravel, PHP, dan MySQL, dari analisis kebutuhan hingga pengujian dan pendampingan pengguna.
                 </p>
 
-                <div class="mx-auto mb-9 max-w-[580px] rounded-r-2xl border-l-4 border-[#1677FF] bg-[#F4F9FF] px-5 py-4 text-left lg:mx-0">
-                    <p class="text-[13px] font-semibold text-[#1677FF]">Skripsi</p>
-                    <p class="mt-1 text-[14.5px] leading-relaxed text-[#0B1B3A]">“{{ $thesis['title'] }} ({{ $thesis['case'] }})”, {{ $thesis['year'] }}</p>
-                </div>
-
-                <div class="flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
+                <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
                     <a href="#projects" class="inline-flex h-[52px] w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#0A72FF] to-[#5F4FEE] px-8 text-[15px] font-semibold text-white shadow-[0_8px_20px_-6px_rgba(40,90,245,0.5)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_12px_24px_-6px_rgba(40,90,245,0.7)] sm:w-auto">
                         Lihat Proyek
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
@@ -174,8 +195,7 @@
                     </a>
                 </div>
 
-                <div class="mt-8 flex items-center justify-center gap-3 lg:justify-start">
-                    <span class="text-[13px] font-medium text-[#64748B]">Terhubung:</span>
+                <div class="mt-7 flex items-center justify-center gap-3 lg:justify-start">
                     <a href="{{ $links['github'] }}" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="flex h-10 w-10 items-center justify-center rounded-full border border-[#DCE7F5] bg-white transition hover:-translate-y-0.5 hover:border-[#1677FF]">
                         <img src="{{ $dev('github') }}" alt="" class="h-5 w-5">
                     </a>
@@ -188,47 +208,16 @@
                 </div>
             </div>
 
-            {{-- Kartu foto dan data singkat --}}
-            <div class="relative lg:col-span-5" data-aos="fade-left" data-aos-delay="100">
-                <div class="relative mx-auto w-full max-w-[400px]">
-                    <div class="absolute -inset-3 rounded-[36px] bg-gradient-to-tr from-[#1677FF]/25 to-[#7048FF]/25 blur-2xl"></div>
-
-                    <div class="relative overflow-hidden rounded-[28px] border border-white/70 bg-white shadow-[0_20px_50px_-20px_rgba(22,119,255,0.35)]">
-                        <div class="relative aspect-[10/11] bg-gradient-to-br from-[#EAF3FF] to-[#DDE6FF]">
-                            @if($heroPhoto)
-                                <img src="{{ $heroPhoto }}" alt="Foto Suprapto" class="h-full w-full object-cover object-top">
-                            @else
-                                <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#0A6CFF] to-[#5F4FEE]">
-                                    <span class="text-[110px] font-extrabold text-white/90">S</span>
-                                </div>
-                            @endif
-                            <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0B1B3A]/85 to-transparent px-6 pb-5 pt-16">
-                                <p class="text-[19px] font-bold text-white">Suprapto, S.Kom.</p>
-                                <p class="text-[13.5px] font-medium text-white/85">Junior Web Programmer (BNSP)</p>
-                            </div>
+            {{-- Foto saja: tinggi mengikuti kolom teks di sebelah kiri --}}
+            <div class="lg:col-span-5" data-aos="fade-left" data-aos-delay="100">
+                <div class="relative mx-auto aspect-[4/5] w-full max-w-[380px] overflow-hidden rounded-[28px] border border-[#DCE7F5] bg-gradient-to-br from-[#EAF3FF] to-[#DDE6FF] shadow-[0_24px_50px_-24px_rgba(22,119,255,0.35)] lg:mx-0 lg:aspect-auto lg:h-full lg:min-h-[420px] lg:max-w-none">
+                    @if($heroPhoto)
+                        <img src="{{ $heroPhoto }}" alt="Foto Suprapto" class="absolute inset-0 h-full w-full object-cover object-top">
+                    @else
+                        <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#0A6CFF] to-[#5F4FEE]">
+                            <span class="text-[110px] font-extrabold text-white/90">S</span>
                         </div>
-
-                        <dl class="space-y-3 p-6 text-[14px]">
-                            <div class="flex justify-between gap-4"><dt class="text-[#64748B]">Pendidikan</dt><dd class="text-right font-semibold text-[#0B1B3A]">S1 Teknologi Informasi</dd></div>
-                            <div class="flex justify-between gap-4"><dt class="text-[#64748B]">Kampus</dt><dd class="text-right font-semibold text-[#0B1B3A]">ITSNU Pekalongan</dd></div>
-                            <div class="flex justify-between gap-4"><dt class="text-[#64748B]">IPK</dt><dd class="font-semibold text-[#0B1B3A]">3,76</dd></div>
-                            <div class="flex justify-between gap-4"><dt class="text-[#64748B]">Sertifikasi</dt><dd class="text-right font-semibold text-[#0B1B3A]">BNSP Junior Web Programmer</dd></div>
-                            <div class="flex justify-between gap-4"><dt class="text-[#64748B]">Domisili</dt><dd class="text-right font-semibold text-[#0B1B3A]">Kab. Pekalongan, Jawa Tengah</dd></div>
-                        </dl>
-                    </div>
-
-                    <div class="animate-float absolute -left-6 top-10 hidden items-center gap-3 rounded-2xl border border-[#DCE7F5] bg-white px-4 py-3 shadow-lg md:flex">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#EAF6FF] text-[#1677FF]">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
-                        </span>
-                        <span class="leading-tight"><span class="block text-[15px] font-bold text-[#0B1B3A]">UAT 84,28%</span><span class="text-[12px] text-[#64748B]">Sangat Layak</span></span>
-                    </div>
-                    <div class="animate-float absolute -right-6 bottom-[38%] hidden items-center gap-3 rounded-2xl border border-[#DCE7F5] bg-white px-4 py-3 shadow-lg md:flex" style="animation-delay: 1.5s">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#EEF0FF] text-[#5F4FEE]">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="m8.5 14-1.5 8 5-3 5 3-1.5-8"/></svg>
-                        </span>
-                        <span class="leading-tight"><span class="block text-[15px] font-bold text-[#0B1B3A]">2 Hak Cipta</span><span class="text-[12px] text-[#64748B]">Program Komputer</span></span>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -298,11 +287,23 @@
                             <dt class="font-semibold text-[#0B1B3A]">Skripsi</dt>
                             <dd class="text-[#64748B]">“{{ $thesis['title'] }} ({{ $thesis['case'] }})”, {{ $thesis['year'] }}.</dd>
                         </div>
+                        <div>
+                            <dt class="font-semibold text-[#0B1B3A]">Luaran</dt>
+                            <dd>
+                                <ul class="mt-1 list-disc space-y-1 pl-5 text-[#64748B] marker:text-[#1677FF]">
+                                    <li>Sistem informasi manajemen Posyandu berbasis web (Laravel, PHP, MySQL)</li>
+                                    <li>Black Box Testing valid dan UAT 84,28% (“Sangat Layak”)</li>
+                                    <li>Hak Cipta Program Komputer No. 001576590</li>
+                                </ul>
+                            </dd>
+                        </div>
                     </dl>
-                    <a href="#thesis" class="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[#1677FF] hover:text-[#0A6CFF]">
-                        Lihat ringkasan skripsi
-                        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-                    </a>
+                    <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13.5px] font-semibold">
+                        <a href="{{ $thesis['live'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-[#1677FF] hover:text-[#0A6CFF]">Buka sistem <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9"/></svg></a>
+                        @if($thesisProject)
+                            <a href="{{ route('projects.show', $thesisProject['slug']) }}" class="text-[#1677FF] hover:text-[#0A6CFF]">Detail dan dokumentasi</a>
+                        @endif
+                    </div>
                 </div>
 
                 <div class="flex items-start gap-4 rounded-[22px] border border-[#DCE7F5] bg-white p-6">
@@ -313,66 +314,13 @@
                         <h3 class="text-[16px] font-bold text-[#0B1B3A]">Sertifikat Kompetensi BNSP</h3>
                         <p class="text-[14px] text-[#64748B]">Junior Web Programmer · LSP TIKOM</p>
                         <p class="mt-1 text-[13.5px] font-medium text-[#0B1B3A]">Terbit 18 September 2026, berlaku hingga 18 September 2029</p>
+                        @if($bnspIndex !== false)
+                            <button type="button" data-index="{{ $bnspIndex }}" class="cert-open mt-3 inline-flex items-center gap-2 text-[13.5px] font-bold text-[#1677FF] hover:text-[#0A6CFF]">
+                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                                Lihat sertifikat
+                            </button>
+                        @endif
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-{{-- ======================= SKRIPSI ======================= --}}
-<section id="thesis" class="border-y border-[#DCE7F5]/60 bg-[#FAFCFF] py-20 lg:py-24">
-    <div class="mx-auto max-w-[1180px] px-6">
-        <div class="mb-12 max-w-2xl">
-            <span class="mb-2 block text-[13px] font-semibold text-[#1677FF]">Karya akhir S1</span>
-            <h2 class="text-[32px] font-bold text-[#0B1B3A] md:text-[38px]">Skripsi</h2>
-        </div>
-
-        <div class="grid overflow-hidden rounded-[28px] border border-[#DCE7F5] bg-white shadow-[0_20px_40px_-24px_rgba(11,27,58,0.18)] lg:grid-cols-5">
-            <div class="p-8 lg:col-span-3 lg:p-12">
-                <div class="mb-5 flex flex-wrap gap-2">
-                    @foreach($thesis['tags'] as $tag)
-                        <span class="rounded-md bg-[#EAF6FF] px-3 py-1 text-[12px] font-semibold text-[#1677FF]">{{ $tag }}</span>
-                    @endforeach
-                </div>
-
-                <h3 class="text-[24px] font-bold leading-snug text-[#0B1B3A] md:text-[28px]">{{ $thesis['title'] }}</h3>
-                <p class="mt-2 text-[15px] font-semibold text-[#1677FF]">{{ $thesis['case'] }} · {{ $thesis['year'] }}</p>
-                <p class="mt-5 text-[15px] leading-[1.85] text-[#64748B]">{{ $thesis['summary'] }}</p>
-
-                <h4 class="mb-4 mt-8 text-[14px] font-bold text-[#0B1B3A]">Cakupan sistem</h4>
-                <div class="grid gap-4 sm:grid-cols-2">
-                    @foreach($thesis['features'] as [$ft, $fd])
-                        <div class="flex items-start gap-3 rounded-2xl border border-[#DCE7F5] bg-[#FAFCFF] p-4">
-                            <svg class="mt-0.5 h-5 w-5 shrink-0 text-[#1677FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
-                            <div>
-                                <p class="text-[14px] font-semibold text-[#0B1B3A]">{{ $ft }}</p>
-                                <p class="mt-0.5 text-[13px] leading-relaxed text-[#64748B]">{{ $fd }}</p>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="mt-8 flex flex-wrap items-center gap-5">
-                    <a href="{{ $thesis['live'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex h-[46px] items-center justify-center rounded-full bg-gradient-to-r from-[#0A72FF] to-[#5F4FEE] px-6 text-[14px] font-semibold text-white transition hover:-translate-y-0.5">
-                        Buka Sistem
-                    </a>
-                    @if($thesisProject)
-                        <a href="{{ route('projects.show', $thesisProject['slug']) }}" class="text-[14px] font-semibold text-[#1677FF] hover:text-[#0A6CFF]">Detail dan dokumentasi</a>
-                    @endif
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-br from-[#063B91] via-[#126BFF] to-[#7147FF] p-8 text-white lg:col-span-2 lg:p-12">
-                <h4 class="mb-6 text-[15px] font-semibold text-white/90">Hasil pengujian dan pengakuan</h4>
-                <div class="space-y-4">
-                    @foreach($thesis['results'] as [$rl, $rv, $rn])
-                        <div class="rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur">
-                            <p class="text-[13px] font-medium text-white/80">{{ $rl }}</p>
-                            <p class="mt-1 text-[28px] font-extrabold leading-tight">{{ $rv }}</p>
-                            <p class="mt-1 text-[13px] text-white/80">{{ $rn }}</p>
-                        </div>
-                    @endforeach
                 </div>
             </div>
         </div>
@@ -387,51 +335,66 @@
             <h2 class="text-[32px] font-bold text-[#0B1B3A] md:text-[38px]">Pengalaman</h2>
         </div>
 
-        <ol class="relative space-y-8 border-l-2 border-[#DCE7F5] pl-8">
-            @foreach($timeline as $item)
-                <li class="relative">
-                    <span class="absolute -left-[43px] top-7 h-5 w-5 rounded-full border-4 border-white bg-[#1677FF] shadow"></span>
-                    <article class="rounded-[22px] border border-[#DCE7F5] bg-white p-7 shadow-sm">
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                                <h3 class="text-[18px] font-bold text-[#0B1B3A]">{{ $item['role'] }}</h3>
-                                <p class="mt-0.5 text-[14.5px] font-semibold text-[#1677FF]">{{ $item['org'] }}</p>
+        @if($timeline->isNotEmpty())
+            <ol class="relative space-y-8 border-l-2 border-[#DCE7F5] pl-8">
+                @foreach($timeline as $item)
+                    <li class="relative">
+                        <span class="absolute -left-[43px] top-7 h-5 w-5 rounded-full border-4 border-white bg-[#1677FF] shadow"></span>
+                        <article class="rounded-[22px] border border-[#DCE7F5] bg-white p-7 shadow-sm">
+                            <div class="flex flex-wrap items-start justify-between gap-3">
+                                <div>
+                                    <h3 class="text-[18px] font-bold text-[#0B1B3A]">{{ $item['role'] }}</h3>
+                                    <p class="mt-0.5 text-[14.5px] font-semibold text-[#1677FF]">{{ $item['org'] }}</p>
+                                </div>
+                                @if($item['period'])
+                                    <span class="rounded-full border border-[#DCE7F5] bg-[#F4F9FF] px-4 py-1.5 text-[13px] font-semibold text-[#0B1B3A]">{{ $item['period'] }}</span>
+                                @endif
                             </div>
-                            <span class="rounded-full border border-[#DCE7F5] bg-[#F4F9FF] px-4 py-1.5 text-[13px] font-semibold text-[#0B1B3A]">{{ $item['period'] }}</span>
-                        </div>
-                        @if(!empty($item['note']))
-                            <p class="mt-2 text-[13.5px] italic text-[#64748B]">{{ $item['note'] }}</p>
-                        @endif
-                        <ul class="mt-5 space-y-2.5 text-[14.5px] leading-relaxed text-[#475569]">
-                            @foreach($item['bullets'] as $b)
-                                <li class="flex items-start gap-3">
-                                    <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1677FF]"></span>
-                                    <span>{{ $b }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-                        @if(!empty($item['link']))
-                            <a href="{{ $item['link']['url'] }}" target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[#1677FF] hover:text-[#0A6CFF]">
-                                {{ $item['link']['label'] }}
-                                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9"/></svg>
-                            </a>
-                        @endif
-                    </article>
-                </li>
-            @endforeach
-        </ol>
+                            @if($item['note'])
+                                <p class="mt-2 text-[13.5px] italic text-[#64748B]">{{ $item['note'] }}</p>
+                            @endif
+                            @if(count($item['bullets']))
+                                <ul class="mt-5 space-y-2.5 text-[14.5px] leading-relaxed text-[#475569]">
+                                    @foreach($item['bullets'] as $b)
+                                        <li class="flex items-start gap-3">
+                                            <span class="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1677FF]"></span>
+                                            <span>{{ $b }}</span>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                            @if(!empty($item['link']['url']))
+                                <a href="{{ $item['link']['url'] }}" target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[#1677FF] hover:text-[#0A6CFF]">
+                                    {{ $item['link']['label'] ?? 'Buka tautan' }}
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9"/></svg>
+                                </a>
+                            @endif
+                            <div class="mt-5 border-t border-[#EEF3FA] pt-4">
+                                <a href="{{ $profileUrl }}#pengalaman-{{ $loop->iteration }}" class="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[#1677FF] hover:text-[#0A6CFF]">Lihat detail dan dokumentasi <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
+                            </div>
+                        </article>
+                    </li>
+                @endforeach
+            </ol>
+        @elseif(app()->environment('local'))
+            {{-- Peringatan hanya tampil di lokal --}}
+            <div class="rounded-2xl border border-dashed border-amber-400 bg-amber-50 p-6 text-[14px] leading-relaxed text-amber-900">
+                Data pengalaman belum terbaca. Pastikan <code class="font-semibold">config/portfolio.php</code> memiliki kunci
+                <code class="font-semibold">'timeline'</code> yang berisi daftar pengalaman, lalu jalankan
+                <code class="font-semibold">php artisan config:clear</code>.
+            </div>
+        @endif
 
-        @if(count($orgs))
+        @if($orgs->isNotEmpty())
             <h3 class="mb-5 mt-14 text-[18px] font-bold text-[#0B1B3A]">Organisasi dan kegiatan</h3>
             <div class="grid gap-5 md:grid-cols-2">
-                @foreach($orgs as [$oTitle, $oOrg, $oDate, $oNote])
+                @foreach($orgs as $org)
                     <div class="rounded-[20px] border border-[#DCE7F5] bg-[#FAFCFF] p-6">
-                        <p class="text-[13px] font-semibold text-[#1677FF]">{{ $oDate }}</p>
-                        <h4 class="mt-1 text-[15.5px] font-bold leading-snug text-[#0B1B3A]">{{ $oTitle }}</h4>
-                        <p class="mt-1 text-[13.5px] text-[#64748B]">{{ $oOrg }}</p>
-                        @if($oNote)
-                            <p class="mt-2 text-[13.5px] leading-relaxed text-[#64748B]">{{ $oNote }}</p>
-                        @endif
+                        @if($org['time'])<p class="text-[13px] font-semibold text-[#1677FF]">{{ $org['time'] }}</p>@endif
+                        <h4 class="mt-1 text-[15.5px] font-bold leading-snug text-[#0B1B3A]">{{ $org['title'] }}</h4>
+                        @if($org['org'])<p class="mt-1 text-[13.5px] text-[#64748B]">{{ $org['org'] }}</p>@endif
+                        @if($org['desc'])<p class="mt-2 text-[13.5px] leading-relaxed text-[#64748B]">{{ $org['desc'] }}</p>@endif
+                        <a href="{{ $profileUrl }}#kegiatan-{{ $loop->iteration }}" class="mt-4 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[#1677FF] hover:text-[#0A6CFF]">Lihat detail dan dokumentasi <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></a>
                     </div>
                 @endforeach
             </div>
@@ -483,6 +446,9 @@
             <span class="mb-2 block text-[13px] font-semibold text-[#1677FF]">Kompetensi</span>
             <h2 class="mb-4 text-[32px] font-bold text-[#0B1B3A] md:text-[38px]">Keahlian dan Perangkat Kerja</h2>
             <p class="text-[16px] leading-relaxed text-[#64748B]">Teknologi, metode, dan keterampilan pendukung yang saya gunakan pada proyek nyata maupun pekerjaan akademik.</p>
+            <a href="{{ $skillsUrl }}" class="mt-5 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-[#1677FF] hover:text-[#0A6CFF]">Lihat detail keahlian
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
         </div>
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -530,13 +496,21 @@
 
         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
             @foreach($ip as [$type, $title, $meta, $note, $url])
+                @php $ipFile = str_contains(strtolower($type), 'hak cipta') ? $ipFileFor($title) : null; @endphp
                 <article class="flex flex-col rounded-[22px] border border-[#DCE7F5] bg-white p-7 shadow-sm transition duration-300 hover:border-[#1677FF]/40">
                     <span class="mb-4 self-start rounded-md bg-[#EAF6FF] px-3 py-1 text-[12px] font-semibold text-[#1677FF]">{{ $type }}</span>
                     <h3 class="mb-3 text-[16.5px] font-bold leading-snug text-[#0B1B3A]">{{ $title }}</h3>
                     <p class="mb-1 text-[13.5px] font-semibold text-[#0B1B3A]">{{ $meta }}</p>
                     <p class="text-[13px] leading-relaxed text-[#64748B]">{{ $note }}</p>
+                    @if($ipFile)
+                        <button type="button" class="ip-open mt-auto inline-flex items-center gap-2 self-start pt-5 text-[13.5px] font-bold text-[#1677FF] hover:text-[#0A6CFF]"
+                                data-file="{{ $ipFile }}" data-title="{{ $title }}" data-meta="{{ $meta }}">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Lihat surat pencatatan
+                        </button>
+                    @endif
                     @if($url)
-                        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="mt-5 inline-flex items-center gap-1.5 text-[13px] font-bold text-[#1677FF] hover:text-[#0A6CFF]">
+                        <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="mt-auto inline-flex items-center gap-1.5 self-start pt-5 text-[13px] font-bold text-[#1677FF] hover:text-[#0A6CFF]">
                             Buka artikel
                             <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17 17 7M8 7h9v9"/></svg>
                         </a>
@@ -558,22 +532,19 @@
 
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($certificates as $cert)
-                <article class="group overflow-hidden rounded-[20px] border border-[#DCE7F5] bg-white shadow-sm transition duration-300 hover:-translate-y-1.5 hover:border-[#1677FF]/40 hover:shadow-[0_18px_36px_-14px_rgba(22,119,255,0.28)]">
+                <article class="flex flex-col overflow-hidden rounded-[20px] border border-[#DCE7F5] bg-white shadow-sm transition duration-300 hover:border-[#1677FF]/40 hover:shadow-[0_18px_36px_-14px_rgba(22,119,255,0.28)]">
                     <button type="button" data-index="{{ $loop->index }}" aria-label="Lihat sertifikat {{ $cert['title'] }}"
                             class="cert-open relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-[#F4F9FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#1677FF]">
-                        <img src="{{ asset($cert['image']) }}" alt="Sertifikat {{ $cert['title'] }}" loading="lazy"
-                             class="h-full w-full object-cover object-top transition duration-700 ease-out group-hover:scale-[1.06]">
-                        <span class="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-[#0B1B3A]/70 via-[#0B1B3A]/10 to-transparent pb-4 opacity-0 transition duration-300 group-hover:opacity-100 group-focus-within:opacity-100">
-                            <span class="inline-flex translate-y-2 items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-[13px] font-semibold text-[#0B1B3A] shadow transition duration-300 group-hover:translate-y-0 group-focus-within:translate-y-0">
-                                <svg class="h-4 w-4 text-[#1677FF]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3M11 8v6M8 11h6"/></svg>
-                                Lihat sertifikat
-                            </span>
-                        </span>
+                        <img src="{{ asset($cert['image']) }}" alt="Sertifikat {{ $cert['title'] }}" loading="lazy" class="h-full w-full object-cover object-top">
                     </button>
-                    <div class="p-5">
+                    <div class="flex flex-1 flex-col p-5">
                         <h3 class="mb-1.5 line-clamp-3 text-[15px] font-bold leading-snug text-[#0B1B3A]">{{ $cert['title'] }}</h3>
                         <p class="text-[13px] font-medium text-[#64748B]">{{ $cert['issuer'] }}</p>
                         <p class="mt-1 text-[13px] text-[#64748B]">{{ $cert['date'] }}</p>
+                        <button type="button" data-index="{{ $loop->index }}" class="cert-open mt-auto inline-flex items-center gap-2 self-start pt-4 text-[13.5px] font-bold text-[#1677FF] hover:text-[#0A6CFF]">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                            Lihat sertifikat
+                        </button>
                     </div>
                 </article>
             @endforeach
@@ -633,6 +604,28 @@
         </div>
     </div>
 </section>
+
+{{-- ======================= PREVIEW HAK CIPTA (PDF atau gambar) ======================= --}}
+<dialog id="ipModal" aria-labelledby="ipTitle" class="m-auto w-[94vw] max-w-[920px] overflow-hidden rounded-[24px] border-0 bg-white p-0 shadow-2xl">
+    <div class="flex max-h-[92vh] flex-col">
+        <div class="flex items-start justify-between gap-4 border-b border-[#DCE7F5] p-5 sm:px-7">
+            <div>
+                <h3 id="ipTitle" class="text-[17px] font-bold leading-snug text-[#0B1B3A]"></h3>
+                <p id="ipMeta" class="mt-1 text-[13.5px] text-[#64748B]"></p>
+            </div>
+            <button type="button" id="ipClose" aria-label="Tutup" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[#64748B] transition hover:bg-[#F4F9FF] hover:text-[#0B1B3A]">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="min-h-0 flex-1 overflow-auto bg-[#EEF2F8]">
+            <iframe id="ipFrame" title="Surat pencatatan ciptaan" class="hidden h-[72vh] w-full border-0"></iframe>
+            <img id="ipImg" alt="Surat pencatatan ciptaan" class="mx-auto hidden max-h-[72vh] w-auto max-w-full object-contain">
+        </div>
+        <div class="border-t border-[#DCE7F5] px-5 py-3 text-[13px] text-[#64748B] sm:px-7">
+            Dokumen tidak tampil? <a id="ipLink" href="#" target="_blank" rel="noopener noreferrer" class="font-semibold text-[#1677FF] hover:text-[#0A6CFF]">Buka di tab baru</a>
+        </div>
+    </div>
+</dialog>
 
 {{-- ======================= PREVIEW SERTIFIKAT (modal, tanpa tab baru) ======================= --}}
 <dialog id="certModal" aria-labelledby="certTitle" class="m-auto w-[94vw] max-w-[1000px] overflow-hidden rounded-[24px] border-0 bg-white p-0 shadow-2xl">
@@ -721,6 +714,37 @@
     modal.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft')  step(-1);
         if (e.key === 'ArrowRight') step(1);
+    });
+})();
+</script>
+
+<script>
+(() => {
+    const modal = document.getElementById('ipModal');
+    if (!modal) return;
+    const frame = document.getElementById('ipFrame');
+    const img   = document.getElementById('ipImg');
+    const isPdf = (f) => /\.pdf($|\?)/i.test(f);
+
+    document.querySelectorAll('.ip-open').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const file = btn.dataset.file;
+            document.getElementById('ipTitle').textContent = btn.dataset.title || '';
+            document.getElementById('ipMeta').textContent  = btn.dataset.meta || '';
+            document.getElementById('ipLink').href = file;
+            frame.classList.toggle('hidden', !isPdf(file));
+            img.classList.toggle('hidden', isPdf(file));
+            if (isPdf(file)) { frame.src = file + '#toolbar=0&navpanes=0'; img.removeAttribute('src'); }
+            else { img.src = file; frame.removeAttribute('src'); }
+            modal.showModal();
+            document.documentElement.classList.add('overflow-hidden');
+        });
+    });
+    document.getElementById('ipClose').addEventListener('click', () => modal.close());
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+    modal.addEventListener('close', () => {
+        frame.removeAttribute('src'); img.removeAttribute('src');
+        document.documentElement.classList.remove('overflow-hidden');
     });
 })();
 </script>

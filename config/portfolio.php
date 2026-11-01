@@ -102,6 +102,9 @@ return [
             ],
             'tags'   => ['PHP', 'MySQL', 'WhatsApp Blast API'],
             'links'  => [],
+            'photos' => [
+                ['images/dokumentasi/magang-creatifla.jpg', 'Magang Backend Developer di Creatifla Multimedia'],
+            ],
         ],
         [
             'role'   => 'Anggota Tim Pengembang & Pendamping Mitra',
@@ -118,6 +121,10 @@ return [
                 ['Lihat Sistem', 'https://tiketlolongadventure.com'],
                 ['Baca Publikasi', 'https://doi.org/10.22236/solma.v15i1.20925'],
             ],
+            'photos' => [
+                ['images/dokumentasi/pkm-pelatihan.jpg', 'Pelatihan penggunaan sistem bagi 20 anggota Pokdarwis (11 Agustus 2025)'],
+                ['images/dokumentasi/pkm-monev.jpg', 'Monitoring dan evaluasi hibah PKM di lokasi mitra (8 Oktober 2025)'],
+            ],
         ],
         [
             // [isi] = data yang belum ada di CV: lokasi, periode, dan tugas humas sebenarnya
@@ -131,6 +138,10 @@ return [
             ],
             'tags'   => ['Publikasi', 'Dokumentasi', 'Komunikasi'],
             'links'  => [],
+            'photos' => [
+                ['images/dokumentasi/kkn-humas-1.jpg', 'Dokumentasi kegiatan KKN bidang Humas'],
+                ['images/dokumentasi/kkn-humas-2.jpg', 'Komunikasi dengan perangkat desa dan warga'],
+            ],
         ],
     ],
 
@@ -248,6 +259,8 @@ return [
                 ['images/projects/sistem-tiket-lolong-adventure/dokumentasi-1.png', 'Halaman utama dan pilihan paket wisata'],
                 ['images/projects/sistem-tiket-lolong-adventure/dokumentasi-2.png', 'Alur pemesanan tiket'],
                 ['images/projects/sistem-tiket-lolong-adventure/dokumentasi-3.png', 'Pelatihan penggunaan sistem bersama Pokdarwis (11 Agustus 2025)'],
+                ['images/dokumentasi/pkm-pelatihan.jpg', 'Foto kegiatan pelatihan bagi 20 anggota Pokdarwis (11 Agustus 2025)'],
+                ['images/dokumentasi/pkm-monev.jpg', 'Monitoring dan evaluasi hibah PKM di lokasi mitra (8 Oktober 2025)'],
             ],
         ],
         [
@@ -336,7 +349,7 @@ return [
             'tech'     => ['Aplikasi Web'],
             'live'     => 'https://desa-windujaji.vercel.app',
             'links'    => [],
-            'cover'    => 'images/projects/website-desa-windujaji/cover.png',
+            'cover'    => 'images/web-desa.png',
             'gallery'  => [
                 ['images/projects/website-desa-windujaji/dokumentasi-1.png', 'Beranda dan profil desa'],
                 ['images/projects/website-desa-windujaji/dokumentasi-2.png', 'Data kependudukan dan UMKM'],

@@ -84,7 +84,7 @@
                 <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Beranda</a>
                 <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Profil</a>
                 <a href="{{ route('services') }}" class="nav-link {{ request()->routeIs('services') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Skill</a>
-                <a href="{{ route('projects') }}" class="nav-link {{ request()->routeIs('projects') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Project</a>
+                <a href="{{ route('projects') }}" class="nav-link {{ request()->routeIs('projects', 'projects.show') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Project</a>
                 <a href="{{ route('dokumentasi') }}" class="nav-link {{ request()->routeIs('dokumentasi') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Dokumentasi</a>
                 <a href="{{ route('contact') }}" class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }} px-4 lg:px-5 py-2.5 text-[14.5px] font-medium rounded-full">Hubungi</a>
             </nav>
@@ -107,7 +107,7 @@
             <a href="{{ route('home') }}" class="mobile-link {{ request()->routeIs('home') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Beranda</a>
             <a href="{{ route('about') }}" class="mobile-link {{ request()->routeIs('about') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Profil Saya</a>
             <a href="{{ route('services') }}" class="mobile-link {{ request()->routeIs('services') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Keahlian</a>
-            <a href="{{ route('projects') }}" class="mobile-link {{ request()->routeIs('projects') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Portofolio</a>
+            <a href="{{ route('projects') }}" class="mobile-link {{ request()->routeIs('projects', 'projects.show') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Portofolio</a>
             <a href="{{ route('dokumentasi') }}" class="mobile-link {{ request()->routeIs('dokumentasi') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Dokumentasi</a>
             <a href="{{ route('contact') }}" class="mobile-link {{ request()->routeIs('contact') ? 'bg-[#F4F9FF] text-[#1677FF] font-semibold' : 'text-[#0B1B3A] font-medium hover:bg-[#F4F9FF] hover:text-[#1677FF]' }} px-5 py-3.5 text-[16px] rounded-xl transition-colors">Hubungi</a>
         </div>
