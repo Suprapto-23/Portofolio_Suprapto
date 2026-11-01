@@ -132,6 +132,24 @@
                     </div>
                 </div>
             @endif
+            @if(!empty($project['modules']))
+                <div>
+                    <h2 class="mb-5 text-[24px] font-bold text-[#0B1B3A]">Modul dan peran pengguna</h2>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        @foreach($project['modules'] as [$mTitle, $mDesc, $mItems])
+                            <div class="rounded-2xl border border-[#DCE7F5] bg-white p-6 shadow-sm">
+                                <h3 class="text-[16px] font-bold text-[#0B1B3A]">{{ $mTitle }}</h3>
+                                <p class="mt-1 text-[13.5px] leading-relaxed text-[#64748B]">{{ $mDesc }}</p>
+                                <ul class="mt-4 flex flex-wrap gap-2">
+                                    @foreach($mItems as $mItem)
+                                        <li class="rounded-full border border-[#DCE7F5] bg-[#F4F9FF] px-3 py-1 text-[12.5px] font-semibold text-[#0B1B3A]">{{ $mItem }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             @if(!empty($project['results']))
                 <div>
@@ -174,18 +192,32 @@
             <p class="text-[15px] text-[#64748B]">Tangkapan layar dan dokumentasi kegiatan dari proyek ini. Klik gambar untuk memperbesar.</p>
         </div>
         @if(count($gallery))
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-            @foreach($gallery as $row)
-                <figure class="overflow-hidden rounded-[20px] border border-[#DCE7F5] bg-[#FAFCFF] shadow-sm">
-                    <button type="button" data-gal data-src="{{ asset($row[0]) }}" data-cap="{{ $row[1] ?? '' }}" class="group block aspect-[16/10] w-full cursor-zoom-in overflow-hidden bg-[#F4F9FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#1677FF]" aria-label="Perbesar: {{ $row[1] ?? 'dokumentasi' }}">
-                        <img src="{{ asset($row[0]) }}" alt="{{ $row[1] ?? 'Dokumentasi proyek' }}" loading="lazy" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
-                    </button>
-                    @if(!empty($row[1]))
-                        <figcaption class="p-5 text-[14px] font-medium leading-snug text-[#0B1B3A]">{{ $row[1] }}</figcaption>
-                    @endif
-                </figure>
-            @endforeach
-        </div>
+                @php
+            $isPhoto = fn ($r) => str_starts_with(basename($r[0]), 'kegiatan-');
+            $g       = collect($gallery);
+            $blocks  = array_filter([
+                ['Tampilan sistem', 'Tangkapan layar halaman pengguna dan panel admin.', $g->reject($isPhoto)->values()],
+                ['Foto kegiatan', 'Dokumentasi pelatihan, pengujian, dan kegiatan di lapangan.', $g->filter($isPhoto)->values()],
+            ], fn ($b) => $b[2]->isNotEmpty());
+        @endphp
+        @foreach($blocks as [$bTitle, $bDesc, $bRows])
+            <div class="{{ $loop->first ? '' : 'mt-14' }}">
+                <h3 class="text-[20px] font-bold text-[#0B1B3A]">{{ $bTitle }} <span class="text-[15px] font-semibold text-[#64748B]">({{ $bRows->count() }})</span></h3>
+                <p class="mb-6 mt-1 text-[14.5px] text-[#64748B]">{{ $bDesc }}</p>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach($bRows as $row)
+                        <figure class="overflow-hidden rounded-[20px] border border-[#DCE7F5] bg-[#FAFCFF] shadow-sm">
+                            <button type="button" data-gal data-src="{{ asset($row[0]) }}" data-cap="{{ $row[1] ?? '' }}" class="group block aspect-[16/10] w-full cursor-zoom-in overflow-hidden bg-[#F4F9FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#1677FF]">
+                                <img src="{{ asset($row[0]) }}" alt="{{ $row[1] ?? 'Dokumentasi proyek' }}" loading="lazy" class="h-full w-full object-cover {{ $isPhoto($row) ? 'object-center' : 'object-top' }} transition-transform duration-500 group-hover:scale-105">
+                            </button>
+                            @if(!empty($row[1]))
+                                <figcaption class="p-5 text-[14px] font-medium leading-snug text-[#0B1B3A]">{{ $row[1] }}</figcaption>
+                            @endif
+                        </figure>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
         @else
         <div class="rounded-[22px] border border-dashed border-[#DCE7F5] bg-[#FAFCFF] px-6 py-12 text-center">
             <h3 class="mb-2 text-[17px] font-bold text-[#0B1B3A]">Foto dokumentasi sedang disiapkan</h3>

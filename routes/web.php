@@ -32,7 +32,10 @@ Route::view('/', 'pages.home')->name('home');
 
 Route::view('/about', 'pages.about')->name('about');
 
-Route::view('/services', 'pages.services')->name('services');
+Route::view('/skills', 'pages.skills')->name('skills');
+
+// Tautan lama /services tetap hidup dan diarahkan ke /skills
+Route::redirect('/services', '/skills', 301);
 
 Route::view('/projects', 'pages.projects')->name('projects');
 
@@ -44,7 +47,7 @@ Route::get('/project/{slug}', function (string $slug) {
 })->name('projects.show');
 
 Route::view('/contact', 'pages.contact')->name('contact');
-
+   Route::redirect('/dokumentasi', '/projects')->name('dokumentasi');
 Route::get('/dokumentasi', function () {
     // Catatan dari database bersifat opsional: bila tabel/model belum siap,
     // halaman tetap tampil memakai foto dari config (tanpa error).

@@ -6,7 +6,7 @@
     $S      = config('portfolio_site');
     $thesis = $S['thesis'];
     $links  = $S['links'];
-    $photo  = \App\Support\Img::url('profile');
+    $photo  = \App\Support\Img::url('about_photo');
     $cvUrl  = (!empty($S['cv']['file']) && is_file(public_path($S['cv']['file']))) ? asset($S['cv']['file']) : null;
     $edu    = $P['education'] ?? [];
     $thesisProject = collect($P['projects'] ?? [])->first(fn ($p) => str_contains(strtolower($p['title'] ?? ''), 'posyandu'));
