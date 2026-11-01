@@ -35,35 +35,36 @@ use App\Http\Controllers\Admin\MessageController;
 // ==========================================
 
 Route::get('/', function () {
-    $settings = SiteSetting::query()->get()->keyBy('key');
-    $hero = HeroSection::query()->where('is_active', true)->orderBy('sort_order')->first();
-    $about = AboutSection::query()->where('is_active', true)->orderBy('id')->first();
+    // $services hanya dipakai bagian "Bidang Keahlian" (otomatis hilang jika kosong)
     $services = Service::query()->where('is_active', true)->orderBy('sort_order')->get();
-    $experiences = Experience::query()->where('is_active', true)->orderBy('sort_order')->get();
-    $educations = Education::query()->where('is_active', true)->orderBy('sort_order')->get();
-    
-    $skillCategories = SkillCategory::query()
-        ->where('is_active', true)
-        ->with(['skills' => function ($q) { 
-            $q->where('is_active', true)->orderBy('sort_order'); 
-        }])
-        ->orderBy('sort_order')
-        ->get();
-        
-    $skills = Skill::query()->where('is_active', true)->orderBy('sort_order')->get();
-    $technologies = Technology::query()->where('is_active', true)->orderBy('sort_order')->get();
-    
-    $projects = Project::query()->where('is_active', true)->orderByDesc('is_featured')->orderBy('sort_order')->get();
-    
-    $certifications = Certification::query()->where('is_active', true)->orderBy('sort_order')->get();
-    $trainings = Training::query()->where('is_active', true)->orderBy('sort_order')->get();
-    $socialLinks = SocialLink::query()->where('is_active', true)->orderBy('sort_order')->get();
 
-    return view('pages.home', compact(
-        'settings', 'hero', 'about', 'services', 'experiences', 'educations',
-        'skillCategories', 'skills', 'technologies', 'projects', 'certifications', 'trainings', 'socialLinks'
-    ));
+    return view('pages.home', compact('services'));
 })->name('home');
+
+Route::get('/about', fn () => view('pages.about'))->name('about');
+
+Route::get('/services', function () {
+    $services = Service::query()->where('is_active', true)->orderBy('sort_order')->get();
+
+    return view('pages.services', compact('services'));
+})->name('services');
+
+Route::get('/projects', fn () => view('pages.projects'))->name('projects');
+
+Route::get('/project/{slug}', function (string $slug) {
+    $project = collect(config('portfolio.projects'))->firstWhere('slug', $slug);
+    abort_unless($project, 404);
+
+    return view('pages.project-detail', compact('project'));
+})->name('projects.show');
+
+Route::get('/contact', fn () => view('pages.contact'))->name('contact');
+
+Route::get('/dokumentasi', function () {
+    $docs = Documentation::query()->where('is_active', true)->latest()->get();
+
+    return view('pages.dokumentasi', compact('docs'));
+})->name('dokumentasi');
 
 Route::get('/about', function () {
     $settings = SiteSetting::query()->get()->keyBy('key');
