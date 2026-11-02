@@ -1,17 +1,7 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-xY-9figj.css",
+    "file": "assets/app-D5skG02V.css",
     "src": "resources/css/app.css",
-    "isEntry": true
-  },
-  "resources/css/filament-login.css": {
-    "file": "assets/filament-login-CWfabaDT.css",
-    "src": "resources/css/filament-login.css",
-    "isEntry": true
-  },
-  "resources/css/filament/admin/theme.css": {
-    "file": "assets/theme-CurIDG9u.css",
-    "src": "resources/css/filament/admin/theme.css",
     "isEntry": true
   },
   "resources/js/app.js": {
