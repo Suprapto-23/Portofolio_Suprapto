@@ -44,7 +44,7 @@ return [
     'facts' => [
         ['Domisili', 'Kab. Pekalongan, Jawa Tengah'],
         ['Pendidikan', 'S1 Teknologi Informasi, ITSNU Pekalongan'],
-        ['IPK', '3,76'],
+        ['IPK', '3,76 (Cum Laude)'],
         ['Sertifikasi', 'BNSP Junior Web Programmer'],
     ],
 

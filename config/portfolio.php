@@ -157,20 +157,20 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'activities' => [
+        'activities' => [
         [
             'Peserta LKMM-TD (Latihan Keterampilan Manajemen Mahasiswa Tingkat Dasar)',
             'HIMATIF ITSNU Pekalongan',
             '11 Desember 2022',
             'Pelatihan dasar manajemen dan kepemimpinan organisasi mahasiswa.',
-            null,
+            [['images/activities/kegiatan/lkmm.png', 'Foto bersama peserta LKMM-TD HIMATIF ITSNU Pekalongan']],
         ],
         [
             'Panitia Workshop Pemrograman “Unlock Your Digital Potential with HTML and CSS”',
             'HIMATIF ITSNU Pekalongan bersama HAN Creative Media',
             'Mei 2025',
             'Terlibat dalam persiapan dan pelaksanaan acara.',
-            'images/dokumentasi/panitia-workshop.jpg',
+            [['images/activities/kegiatan/workshop.png', 'Pelaksanaan Workshop Pemrograman HTML dan CSS']],
         ],
     ],
 
@@ -203,7 +203,7 @@ return [
             'date'     => 'Terbit 18 September 2026',
             'note'     => 'Berlaku hingga 18 September 2029',
             'desc'   => 'Sertifikat kompetensi dari Badan Nasional Sertifikasi Profesi (BNSP) yang diterbitkan melalui LSP TIKOM, sebagai pengakuan kompetensi kerja Junior Web Programmer.',
-            'image'  => 'images/certificates/bnsp-junior-web-programmer.png',
+            'image'  => 'images/certificates/sertifikat-bnsp.png',
             'url'    => null,
         ],
         [
@@ -214,15 +214,6 @@ return [
             'desc'   => "Kelas dasar untuk pemula yang ingin memulai karier di bidang AI, berdurasi total 10 jam dan diakhiri ujian akhir kelas. Cakupan materi:\n• Konsep dasar Artificial Intelligence (1 jam 30 menit)\n• Peran data dalam pengembangan AI (1 jam 25 menit)\n• Dasar Machine Learning dan contoh penerapannya (2 jam 30 menit)\n• Konsep Deep Learning dan implementasi contohnya (2 jam 25 menit)\n\nMenjadi landasan literasi AI yang saya cantumkan pada keahlian pendukung.",
             'image'  => 'images/certificates/dicoding-belajar-dasar-ai.png',
             'url'    => 'https://www.dicoding.com/certificates/KEXL289L0ZG2',
-        ],
-        [
-            'title'    => 'Pelatihan Desain Grafis',
-            'issuer'   => 'BLKK PC GP Ansor',
-            'date'     => 'Agustus – September 2023',
-            'note'     => null,
-            'desc'   => 'Pelatihan dasar desain grafis yang diselenggarakan oleh BLKK PC GP Ansor, menjadi dasar keterampilan desain grafis pada daftar keahlian saya.',
-            'image'  => 'images/certificates/pelatihan-desain-grafis.png',
-            'url'    => null,
         ],
         [
             'title'    => 'Workshop UI/UX Design “Explore the Basic for Innovative Design”',
@@ -300,7 +291,7 @@ return [
             'role'     => 'Anggota tim pengembang (tim 2 orang) & pendamping mitra',
             'period'   => 'Mar – Agu 2025',
             'summary'  => 'Sistem pemesanan tiket wisata berbasis web untuk Pokdarwis Lolong Adventure. Dikembangkan pada program PKM ITSNU Pekalongan dan dipakai untuk transaksi nyata.',
-            'cover'    => 'images/projects/sistem-tiket-lolong-adventure/admin-dashboard.jpg',
+            'cover'    => 'images/projects/sistem-tiket-lolong-adventure/lolong.png',
             'live'     => 'https://tiketlolongadventure.com',
             'tech'     => ['PHP', 'MySQL'],
             'links'    => [
@@ -333,7 +324,7 @@ return [
                 ['Admin', 'Mengelola operasional wisata dari satu panel.', ['Dashboard pendapatan', 'Kelola destinasi', 'Kelola pemesanan', 'Manajemen pelanggan', 'Kirim pesan massal']],
             ],
             'gallery' => [
-                ['images/projects/sistem-tiket-lolong-adventure/admin-dashboard.jpg', 'Dashboard admin: pendapatan harian, mingguan, bulanan, dan pemesanan terbaru'],
+                ['images/projects/sistem-tiket-lolong-adventure/lolong.png', 'Dashboard admin: pendapatan harian, mingguan, bulanan, dan pemesanan terbaru'],
                 ['images/projects/sistem-tiket-lolong-adventure/admin-destinasi.jpg', 'Kelola destinasi wisata beserta harga dan status'],
                 ['images/projects/sistem-tiket-lolong-adventure/admin-pemesanan.jpg', 'Kelola pemesanan dengan filter destinasi, pelanggan, dan status pembayaran'],
                 ['images/projects/sistem-tiket-lolong-adventure/admin-pelanggan.jpg', 'Manajemen pelanggan beserta status pemesanannya (kontak disamarkan)'],
@@ -432,7 +423,7 @@ return [
                 ['images/projects/sapisehat-sistem-pakar/detail-diagnosis.jpg', 'Detail diagnosis: informasi penyakit, gejala terpilih, dan rekomendasi penanganan'],
                 ['images/projects/sapisehat-sistem-pakar/riwayat-diagnosis.jpg', 'Riwayat diagnosis beserta status dan tingkat keyakinan'],
                 ['images/projects/sapisehat-sistem-pakar/laporan-pdf.jpg', 'Laporan diagnosis dalam format PDF'],
-                ['images/projects/sapisehat-sistem-pakar/admin-dashboard.jpg', 'Dashboard admin: jumlah penyakit, gejala, dan total diagnosis'],
+                ['images/projects/sapisehat-sistem-pakar/lolong.png', 'Dashboard admin: jumlah penyakit, gejala, dan total diagnosis'],
                 ['images/projects/sapisehat-sistem-pakar/admin-laporan.jpg', 'Laporan sistem: tren diagnosis dan distribusi penyakit'],
             ],
         ],
@@ -469,7 +460,7 @@ return [
             ],
             'gallery' => [
                 ['images/projects/website-desa-windujaji/beranda.jpg', 'Beranda website resmi Desa Windujaji'],
-                ['images/projects/website-desa-windujaji/admin-dashboard.jpg', 'Dashboard admin: ringkasan berita, UMKM, dan galeri'],
+                ['images/projects/website-desa-windujaji/lolong.png', 'Dashboard admin: ringkasan berita, UMKM, dan galeri'],
                 ['images/projects/website-desa-windujaji/admin-kependudukan.jpg', 'Data kependudukan dengan fitur impor dan ekspor CSV'],
                 ['images/projects/website-desa-windujaji/admin-umkm.jpg', 'Pengelolaan daftar UMKM desa beserta produk dan harga'],
             ],
