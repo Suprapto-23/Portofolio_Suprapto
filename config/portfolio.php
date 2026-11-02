@@ -135,7 +135,7 @@ return [
             // [isi] = data yang belum ada di CV: lokasi, periode, dan tugas humas sebenarnya
             'role'   => 'Anggota KKN · Bidang Humas',
             'org'    => 'Kuliah Kerja Nyata (KKN) ITSNU Pekalongan · [isi lokasi KKN]',
-            'period' => '[isi periode KKN]',
+            'period' => 'Agustus 2025',
             'points' => [
                 'Mengelola publikasi dan dokumentasi kegiatan KKN melalui media sosial dan kanal informasi.',
                 'Menjalin komunikasi dengan perangkat desa, mitra, dan warga selama pelaksanaan program kerja.',
@@ -291,7 +291,7 @@ return [
             'role'     => 'Anggota tim pengembang (tim 2 orang) & pendamping mitra',
             'period'   => 'Mar – Agu 2025',
             'summary'  => 'Sistem pemesanan tiket wisata berbasis web untuk Pokdarwis Lolong Adventure. Dikembangkan pada program PKM ITSNU Pekalongan dan dipakai untuk transaksi nyata.',
-            'cover'    => 'images/projects/sistem-tiket-lolong-adventure/lolong.png',
+            'cover'    => 'images/projects/sistem-tiket-lolong-adventure/lolong.jpg',
             'live'     => 'https://tiketlolongadventure.com',
             'tech'     => ['PHP', 'MySQL'],
             'links'    => [
@@ -324,7 +324,7 @@ return [
                 ['Admin', 'Mengelola operasional wisata dari satu panel.', ['Dashboard pendapatan', 'Kelola destinasi', 'Kelola pemesanan', 'Manajemen pelanggan', 'Kirim pesan massal']],
             ],
             'gallery' => [
-                ['images/projects/sistem-tiket-lolong-adventure/lolong.png', 'Dashboard admin: pendapatan harian, mingguan, bulanan, dan pemesanan terbaru'],
+                ['images/projects/sistem-tiket-lolong-adventure/lolong.jpg', 'Dashboard admin: pendapatan harian, mingguan, bulanan, dan pemesanan terbaru'],
                 ['images/projects/sistem-tiket-lolong-adventure/admin-destinasi.jpg', 'Kelola destinasi wisata beserta harga dan status'],
                 ['images/projects/sistem-tiket-lolong-adventure/admin-pemesanan.jpg', 'Kelola pemesanan dengan filter destinasi, pelanggan, dan status pembayaran'],
                 ['images/projects/sistem-tiket-lolong-adventure/admin-pelanggan.jpg', 'Manajemen pelanggan beserta status pemesanannya (kontak disamarkan)'],
@@ -423,7 +423,7 @@ return [
                 ['images/projects/sapisehat-sistem-pakar/detail-diagnosis.jpg', 'Detail diagnosis: informasi penyakit, gejala terpilih, dan rekomendasi penanganan'],
                 ['images/projects/sapisehat-sistem-pakar/riwayat-diagnosis.jpg', 'Riwayat diagnosis beserta status dan tingkat keyakinan'],
                 ['images/projects/sapisehat-sistem-pakar/laporan-pdf.jpg', 'Laporan diagnosis dalam format PDF'],
-                ['images/projects/sapisehat-sistem-pakar/lolong.png', 'Dashboard admin: jumlah penyakit, gejala, dan total diagnosis'],
+                ['images/projects/sapisehat-sistem-pakar/lolong.jpg', 'Dashboard admin: jumlah penyakit, gejala, dan total diagnosis'],
                 ['images/projects/sapisehat-sistem-pakar/admin-laporan.jpg', 'Laporan sistem: tren diagnosis dan distribusi penyakit'],
             ],
         ],
@@ -460,7 +460,7 @@ return [
             ],
             'gallery' => [
                 ['images/projects/website-desa-windujaji/beranda.jpg', 'Beranda website resmi Desa Windujaji'],
-                ['images/projects/website-desa-windujaji/lolong.png', 'Dashboard admin: ringkasan berita, UMKM, dan galeri'],
+                ['images/projects/website-desa-windujaji/lolong.jpg', 'Dashboard admin: ringkasan berita, UMKM, dan galeri'],
                 ['images/projects/website-desa-windujaji/admin-kependudukan.jpg', 'Data kependudukan dengan fitur impor dan ekspor CSV'],
                 ['images/projects/website-desa-windujaji/admin-umkm.jpg', 'Pengelolaan daftar UMKM desa beserta produk dan harga'],
             ],
