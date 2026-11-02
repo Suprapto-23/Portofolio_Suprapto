@@ -10,7 +10,6 @@ use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\TrainingController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Models\Documentation;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,8 +22,7 @@ use Illuminate\Support\Facades\Route;
 // A. ROUTE HALAMAN PUBLIK (FRONTEND)
 // ------------------------------------------
 // Semua konten halaman publik dibaca dari config/portfolio.php dan
-// config/portfolio_site.php, jadi tidak ada query database di sini
-// (kecuali "Catatan dan arsip" di /dokumentasi, yang opsional).
+// config/portfolio_site.php, jadi tidak ada query database di sini.
 // Setiap route hanya didefinisikan SATU kali.
 // ==========================================
 
@@ -47,18 +45,10 @@ Route::get('/project/{slug}', function (string $slug) {
 })->name('projects.show');
 
 Route::view('/contact', 'pages.contact')->name('contact');
-   Route::redirect('/dokumentasi', '/projects')->name('dokumentasi');
-Route::get('/dokumentasi', function () {
-    // Catatan dari database bersifat opsional: bila tabel/model belum siap,
-    // halaman tetap tampil memakai foto dari config (tanpa error).
-    $docs = rescue(
-        fn () => Documentation::query()->where('is_active', true)->latest()->get(),
-        collect(),
-        false
-    );
 
-    return view('pages.dokumentasi', compact('docs'));
-})->name('dokumentasi');
+// Halaman Dokumentasi digabung ke halaman Proyek (foto sudah ada di
+// halaman detail proyek, Profil, dan Skill). Tautan lama tetap hidup.
+Route::redirect('/dokumentasi', '/projects')->name('dokumentasi');
 
 
 // ==========================================
@@ -99,12 +89,15 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     // 5. Pendidikan
     Route::resource('educations', EducationController::class);
 
-    // 6. Pelatihan
-    Route::resource('trainings', TrainingController::class);
-
-    // 7. Dokumentasi
+    // 6. Dokumentasi
     Route::resource('documentations', DocumentationController::class);
 
-    // 8. Pesan
-    Route::resource('messages', MessageController::class);
+    // 7. Pelatihan dan Pesan
+    // Controller-nya belum ada di repo. Route baru didaftarkan jika filenya
+    // sudah dibuat, supaya aplikasi tidak error saat belum tersedia.
+    foreach (['trainings' => TrainingController::class, 'messages' => MessageController::class] as $name => $controller) {
+        if (class_exists($controller)) {
+            Route::resource($name, $controller);
+        }
+    }
 });

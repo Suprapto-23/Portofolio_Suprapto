@@ -5,16 +5,18 @@
     { "src": "public/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/(build|css|js|images)/(.*)", "dest": "/public/$1/$2" },
-    { "src": "/(.*\\.(?:ico|png|jpe?g|svg|webp|gif|css|js))", "dest": "/public/$1" },
+    { "src": "/(build|css|js|images|documents|favicon|cv)/(.*)", "dest": "/public/$1/$2" },
+    { "src": "/(.*\\.(?:ico|png|jpe?g|svg|webp|gif|css|js|pdf|txt|json|woff2?))", "dest": "/public/$1" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
   "env": {
     "APP_CONFIG_CACHE": "/tmp/config.php",
+    "APP_EVENTS_CACHE": "/tmp/events.php",
     "APP_PACKAGES_CACHE": "/tmp/packages.php",
+    "APP_ROUTES_CACHE": "/tmp/routes.php",
     "APP_SERVICES_CACHE": "/tmp/services.php",
-    "VIEW_COMPILED_PATH": "/tmp",
-    "CACHE_DRIVER": "array",
+    "VIEW_COMPILED_PATH": "/tmp/storage/framework/views",
+    "CACHE_STORE": "array",
     "SESSION_DRIVER": "cookie",
     "LOG_CHANNEL": "stderr"
   }
